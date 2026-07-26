@@ -1,0 +1,31 @@
+# Build output
+/bin/
+/dist/
+/pev
+/genfixture
+*.exe
+
+# Go
+*.test
+*.out
+coverage.txt
+vendor/
+
+# Local scratch bundles produced by scripts/manual-bundle.sh
+/out/
+*.zip
+!testdata/**/*.zip
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Never commit credentials or local overrides
+.env
+.env.*
+!.env.example
+*.pem
+!testdata/**/*.pem
+*.key
