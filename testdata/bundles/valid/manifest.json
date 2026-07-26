@@ -1,0 +1,88 @@
+{
+  "schema": "page-evidence/manifest/v1",
+  "bundle_id": "peb_971adfcae4957b1b4a6abde1",
+  "sealed_at": "2026-07-26T12:00:00Z",
+  "hash_algorithm": "sha256",
+  "capture": {
+    "requested_url": "http://promo.example.com/summer-cashback",
+    "final_url": "https://promo.example.net/summer-cashback?aff=1042",
+    "redirect_chain": [
+      {
+        "url": "http://promo.example.com/summer-cashback",
+        "status": 301,
+        "location": "https://promo.example.com/summer-cashback"
+      },
+      {
+        "url": "https://promo.example.com/summer-cashback",
+        "status": 302,
+        "location": "https://promo.example.net/summer-cashback?aff=1042"
+      }
+    ],
+    "http_status": 200,
+    "remote_ip": "203.0.113.42",
+    "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/126.0.0.0 Safari/537.36",
+    "viewport": {
+      "width": 1280,
+      "height": 800,
+      "device_scale": 2
+    },
+    "full_page": true,
+    "response_headers": {
+      "Cache-Control": [
+        "no-store"
+      ],
+      "Content-Type": [
+        "text/html; charset=utf-8"
+      ],
+      "Date": [
+        "Sun, 26 Jul 2026 11:59:58 GMT"
+      ],
+      "Server": [
+        "nginx"
+      ]
+    },
+    "started_at": "2026-07-26T11:59:58Z",
+    "finished_at": "2026-07-26T12:00:00Z",
+    "renderer": {
+      "name": "HeadlessChrome",
+      "version": "126.0.6478.126"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "capture.json",
+      "role": "capture-metadata",
+      "media_type": "application/json",
+      "size": 1158,
+      "sha256": "375255966f71fab766fd6e512cb086bf7d68cc72b8e3098bc530409992dad40d"
+    },
+    {
+      "path": "dom.html",
+      "role": "dom",
+      "media_type": "text/html; charset=utf-8",
+      "size": 536,
+      "sha256": "7363a06ce6e18ef00e46e310c885aec17d93113d220bf780fc424217ca577a3d"
+    },
+    {
+      "path": "headers.json",
+      "role": "response-headers",
+      "media_type": "application/json",
+      "size": 184,
+      "sha256": "3f963e0aa494283e9de7b4e531ad251524b0aaa68cc7f96bb3b3a68bea296320"
+    },
+    {
+      "path": "page.pdf",
+      "role": "pdf",
+      "media_type": "application/pdf",
+      "size": 611,
+      "sha256": "6b5c22d6e5c6c7be17d770ace17a8d761e75b04dee1ab03abcf755c2d83ad069"
+    },
+    {
+      "path": "screenshot.png",
+      "role": "screenshot",
+      "media_type": "image/png",
+      "size": 806,
+      "sha256": "74bd4f0c001aa9c9dda49f916a5ca21955e2d93252ea2e644317c9fee1ff2c0b"
+    }
+  ]
+}

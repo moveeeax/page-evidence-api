@@ -1,0 +1,45 @@
+{
+  "requested_url": "http://promo.example.com/summer-cashback",
+  "final_url": "https://promo.example.net/summer-cashback?aff=1042",
+  "redirect_chain": [
+    {
+      "url": "http://promo.example.com/summer-cashback",
+      "status": 301,
+      "location": "https://promo.example.com/summer-cashback"
+    },
+    {
+      "url": "https://promo.example.com/summer-cashback",
+      "status": 302,
+      "location": "https://promo.example.net/summer-cashback?aff=1042"
+    }
+  ],
+  "http_status": 200,
+  "remote_ip": "203.0.113.42",
+  "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/126.0.0.0 Safari/537.36",
+  "viewport": {
+    "width": 1280,
+    "height": 800,
+    "device_scale": 2
+  },
+  "full_page": true,
+  "response_headers": {
+    "Cache-Control": [
+      "no-store"
+    ],
+    "Content-Type": [
+      "text/html; charset=utf-8"
+    ],
+    "Date": [
+      "Sun, 26 Jul 2026 11:59:58 GMT"
+    ],
+    "Server": [
+      "nginx"
+    ]
+  },
+  "started_at": "2026-07-26T11:59:58Z",
+  "finished_at": "2026-07-26T12:00:00Z",
+  "renderer": {
+    "name": "HeadlessChrome",
+    "version": "126.0.6478.126"
+  }
+}
