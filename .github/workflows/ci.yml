@@ -1,0 +1,52 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          check-latest: true
+
+      - name: gofmt
+        run: |
+          unformatted=$(gofmt -l .)
+          if [ -n "$unformatted" ]; then
+            echo "these files need gofmt:"
+            echo "$unformatted"
+            exit 1
+          fi
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: build
+        run: go build -trimpath -o bin/pev ./cmd/pev
+
+      - name: test
+        run: go test -race -count=1 ./...
+
+      # The verifier's whole promise is that a bundle checks out offline on a
+      # machine that has never seen this service. CI is that machine.
+      - name: verify the example bundle
+        run: ./bin/pev verify testdata/bundles/valid -tsa-roots testdata/tsa-test-root.pem -require-timestamp
+
+      - name: the tampered bundle must fail
+        run: |
+          if ./bin/pev verify testdata/bundles/tampered -tsa-roots testdata/tsa-test-root.pem; then
+            echo "the tampered bundle verified; the verifier is broken"
+            exit 1
+          fi
