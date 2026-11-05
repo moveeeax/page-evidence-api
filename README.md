@@ -43,7 +43,7 @@ cd page-evidence-api
 go build -o bin/pev ./cmd/pev
 ```
 
-Go 1.24 or newer. No other dependencies.
+Go 1.26 or newer. No other dependencies.
 
 ## Usage example (this one actually runs)
 
@@ -193,6 +193,6 @@ WARC/WACZ, video, HAR, captures behind login/2FA/CAPTCHA, HTML-string-to-PDF tem
 human attestation or notarisation, SOC 2, on-prem deployment, SLAs, team seats, OG-image
 templating, multi-region rendering.
 
-## Licence
+## License
 
-Not yet decided. Until a licence file is added, all rights are reserved.
+MIT. See [LICENSE](LICENSE).
