@@ -1,3 +1,3 @@
 module github.com/moveeeax/page-evidence-api
 
-go 1.24
+go 1.26
