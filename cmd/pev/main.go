@@ -21,6 +21,7 @@ import (
 
 	"github.com/moveeeax/page-evidence-api/internal/bundle"
 	"github.com/moveeeax/page-evidence-api/internal/evidence"
+	"github.com/moveeeax/page-evidence-api/internal/opensslkit"
 	"github.com/moveeeax/page-evidence-api/internal/rfc3161"
 	"github.com/moveeeax/page-evidence-api/internal/verify"
 )
@@ -35,6 +36,7 @@ Usage:
   pev stamp  <dir> [-tsa URL]                       add an RFC 3161 timestamp over the manifest
   pev verify <bundle> [-tsa-roots FILE] [-json]     verify a bundle offline (dir or .zip)
   pev inspect <bundle>                              print what a bundle claims, without verifying
+  pev export-openssl <bundle> -out DIR              write a kit checkable with sha256sum and openssl
   pev version
 
 Exit codes:
@@ -58,6 +60,8 @@ func main() {
 		err = runVerify(os.Args[2:])
 	case "inspect":
 		err = runInspect(os.Args[2:])
+	case "export-openssl":
+		err = runExportOpenSSL(os.Args[2:])
 	case "version":
 		fmt.Printf("pev %s\n", version)
 	case "-h", "--help", "help":
@@ -307,6 +311,37 @@ func runInspect(args []string) error {
 	} else {
 		fmt.Printf("timestamp:   none\n")
 	}
+	return nil
+}
+
+func runExportOpenSSL(args []string) error {
+	fset := flag.NewFlagSet("export-openssl", flag.ExitOnError)
+	out := fset.String("out", "", "directory to write the kit to (must not exist or be empty)")
+	rest, err := parseFlags(fset, args)
+	if err != nil {
+		return err
+	}
+	if len(rest) != 1 {
+		return errors.New("export-openssl: expected exactly one bundle (directory or .zip)")
+	}
+	if *out == "" {
+		return errors.New("export-openssl: -out DIR is required")
+	}
+	b, err := bundle.Open(rest[0])
+	if err != nil {
+		return err
+	}
+	defer b.Close()
+
+	kit, err := opensslkit.Export(b.FS, *out)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("exported %s to %s\n", kit.BundleID, kit.Dir)
+	fmt.Printf("  files:        %d bundle files, %s, %s (%d certificates), %s\n",
+		len(kit.Files), opensslkit.ChecksumsName, opensslkit.UntrustedName, kit.Certificates, opensslkit.InstructName)
+	fmt.Printf("  root needed:  issued by %s, obtain it from the authority\n", kit.TopIssuer)
+	fmt.Printf("\nThe commands are in %s.\n", filepath.Join(kit.Dir, opensslkit.InstructName))
 	return nil
 }
 

@@ -104,10 +104,47 @@ pev inspect testdata/bundles/valid        # what the bundle claims, without veri
 pev verify  bundle.zip -json              # machine-readable report (directory or .zip)
 pev seal    ./capture-dir                 # hash every artefact, write manifest.json
 pev stamp   ./capture-dir                 # request an RFC 3161 token over the manifest
+pev export-openssl bundle.zip -out kit/   # kit checkable with sha256sum and openssl alone
 ```
 
 `pev stamp` is the only command that touches the network, and it refuses to store a token
 that does not verify against the request it just sent (matching digest, matching nonce).
+
+### Verifying without pev
+
+A court expert or the other side's lawyer will not run a binary they have never seen.
+`pev export-openssl` writes a directory they can check with `sha256sum` and
+`openssl ts -verify` only:
+
+```console
+$ ./bin/pev export-openssl testdata/bundles/valid -out kit
+$ cd kit
+$ sha256sum -c artefacts.sha256
+capture.json: OK
+dom.html: OK
+...
+$ openssl ts -verify -data manifest.json -in timestamp.tsr \
+    -untrusted tsa-untrusted.pem -CAfile tsa-root.pem
+Verification: OK
+```
+
+The kit holds the bundle files unchanged, `artefacts.sha256` (the digests from
+`manifest.json` in `sha256sum` format, copied rather than recomputed, so a tampered
+artefact fails the check), `tsa-untrusted.pem` (the certificates embedded in the token)
+and `VERIFY.txt` with the commands, the time and authority the token names, and an
+`-attime` variant for when the TSA certificate has expired since.
+
+The kit never contains a TSA root. `tsa-root.pem` has to come from the authority through
+a channel the reader trusts; a root shipped with the evidence would prove nothing. For
+the example bundle that root is `testdata/tsa-test-root.pem`.
+
+`-out` must be a new or empty directory. Export refuses a bundle without a timestamp, and
+one that already contains a file named like a kit file. Use OpenSSL 3.x: LibreSSL 3.3.6,
+the `/usr/bin/openssl` of macOS, fails with `ess signing certificate error` on tokens
+that carry `signingCertificateV2`. CI runs the kit with Ubuntu's OpenSSL on every push.
+
+`openssl ts -verify` covers the timestamp, not the "no unlisted content" check: the file
+list in `VERIFY.txt` is what the reader compares the directory against.
 
 ## Bundle layout
 
@@ -152,12 +189,13 @@ nonce, so `pev stamp` uses it and `pev verify` cannot.
 ## Repository layout
 
 ```
-cmd/pev              the CLI: seal, stamp, verify, inspect
+cmd/pev              the CLI: seal, stamp, verify, inspect, export-openssl
 cmd/genfixture       dev tool that regenerates testdata/
 internal/evidence    manifest + capture data model, sealing, hashing
 internal/bundle      directory or zip bundle as an fs.FS, reproducible packing
 internal/rfc3161     RFC 3161 + CMS: request building, token parsing, offline verification
 internal/verify      bundle verification and the report
+internal/opensslkit  export of a bundle as a kit for sha256sum and openssl ts -verify
 internal/tsatest     throwaway TSA used by tests and fixtures
 testdata/            example bundles, one intact and one tampered
 ```

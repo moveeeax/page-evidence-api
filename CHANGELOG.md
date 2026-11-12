@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `pev export-openssl BUNDLE -out DIR`: writes the bundle files, `artefacts.sha256`
+  (manifest digests in `sha256sum -c` format), `tsa-untrusted.pem` (the certificates
+  embedded in the timestamp token) and `VERIFY.txt` with the `sha256sum` and
+  `openssl ts -verify` commands, so a bundle can be checked without pev. CI verifies the
+  example kit with OpenSSL.
 - MIT licence.
 - Dependabot configuration for GitHub Actions and Go modules.
 - This changelog.
