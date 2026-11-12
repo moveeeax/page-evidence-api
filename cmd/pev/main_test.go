@@ -96,3 +96,16 @@ func TestLoadRootsRejectsNonPEM(t *testing.T) {
 		t.Fatal("loadRoots accepted a file with no certificates")
 	}
 }
+
+func TestExportOpenSSLThroughCLI(t *testing.T) {
+	out := filepath.Join(t.TempDir(), "kit")
+	if err := runExportOpenSSL([]string{"../../testdata/bundles/valid", "-out", out}); err != nil {
+		t.Fatalf("export-openssl: %v", err)
+	}
+	if _, err := os.Stat(filepath.Join(out, "VERIFY.txt")); err != nil {
+		t.Errorf("no VERIFY.txt: %v", err)
+	}
+	if err := runExportOpenSSL([]string{"../../testdata/bundles/valid"}); err == nil {
+		t.Error("export-openssl without -out succeeded")
+	}
+}

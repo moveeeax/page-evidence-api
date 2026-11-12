@@ -54,3 +54,13 @@ jobs:
             echo "the tampered bundle verified; the verifier is broken"
             exit 1
           fi
+
+      # The same bundle, checked with nothing but coreutils and OpenSSL.
+      - name: the openssl kit verifies without pev
+        run: |
+          ./bin/pev export-openssl testdata/bundles/valid -out "$RUNNER_TEMP/kit"
+          cd "$RUNNER_TEMP/kit"
+          openssl version
+          sha256sum -c artefacts.sha256
+          openssl ts -verify -data manifest.json -in timestamp.tsr \
+            -untrusted tsa-untrusted.pem -CAfile "$GITHUB_WORKSPACE/testdata/tsa-test-root.pem"
